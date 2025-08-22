@@ -51,7 +51,7 @@ class Giris extends StatelessWidget {
               ),
               child: TextField(
                 decoration: const InputDecoration(
-                  labelText: 'Kullanıcı Adı',
+                  labelText: ' Telefon Numarası',
                   border: InputBorder.none,
                 ),
               ),
@@ -66,7 +66,7 @@ class Giris extends StatelessWidget {
               child: TextField(
                 obscureText: true,
                 decoration: const InputDecoration(
-                  labelText: 'Şifre',
+                  labelText: 'Doğrulama Kodu',
                   border: InputBorder.none,
                 ),
               ),
