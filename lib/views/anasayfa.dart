@@ -470,7 +470,8 @@ class _BalanceCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             padding: const EdgeInsets.all(12),
-            child: const Icon(Icons.savings_outlined, size: 28),
+            child: const Icon(Icons.account_balance_wallet_outlined, size: 28),
+
           ),
           const SizedBox(width: 16),
           Expanded(
