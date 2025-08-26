@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "773884376886",
+    "project_id": "merambelediyesisiparis",
+    "storage_bucket": "merambelediyesisiparis.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773884376886:android:0cf42bf05e0783669a2597",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773884376886-hl9gfpro1c70ib1nh19khdh07chgsefm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_application_1",
+            "certificate_hash": "4f0273202ead8bc9c4215d1278f2415585447c32"
+          }
+        },
+        {
+          "client_id": "773884376886-ii12iuoq44l43hf1u5a5b04toa3e0l6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO8hUkV1KbyoKXfn3pmxbxDx-sEgvPoKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773884376886-ii12iuoq44l43hf1u5a5b04toa3e0l6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

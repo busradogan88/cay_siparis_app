@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-List<Map<String, dynamic>> urunler = [];
+import 'package:flutter_application_1/global.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Sepetim extends StatefulWidget {
   const Sepetim({super.key});
@@ -10,6 +11,9 @@ class Sepetim extends StatefulWidget {
 }
 
 class _SepetimState extends State<Sepetim> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   void adetArttir(int index) {
     setState(() {
       urunler[index]["adet"]++;
@@ -19,58 +23,61 @@ class _SepetimState extends State<Sepetim> {
   void adetAzalt(int index) {
     setState(() {
       if (urunler[index]["adet"] > 1) {
-      urunler[index]["adet"]--;
-    } else {
-      
-      urunler.removeAt(index);
-    }
-    }
-    );
+        urunler[index]["adet"]--;
+      } else {
+        urunler.removeAt(index);
+      }
+    });
+  }
+
+  double toplamFiyat() {
+    return urunler.fold<double>(
+        0.0,
+        (toplam, urun) =>
+            toplam + ((urun["fiyat"] ?? 0).toDouble() * ((urun["adet"] ?? 0) as int)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Sepetim")),
+      appBar: AppBar(title: const Text("Sepetim")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Icon(Icons.shopping_cart, size: 40),
-            Text(
+            const Icon(Icons.shopping_cart, size: 40),
+            const Text(
               'Sepetim',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-
             Container(
               width: 400,
               height: 100,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.green[100],
-                 boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.9),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        ),
-                 ]
-              ),
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.green[100],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.9),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]),
               child: Center(
                 child: Column(
                   children: [
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       "Toplam Ürün: ${urunler.fold<int>(0, (toplam, urun) => toplam + ((urun["adet"] ?? 0) as int))} ",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      "Toplam Fiyat: ${urunler.fold<double>(0.0, (toplam, urun) => toplam + ((urun["fiyat"] ?? 0).toDouble() * ((urun["adet"] ?? 0) as int)))} TL",
-                      style: TextStyle(
+                      "Toplam Fiyat: ${toplamFiyat().toStringAsFixed(2)} TL",
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -79,10 +86,9 @@ class _SepetimState extends State<Sepetim> {
                 ),
               ),
             ),
-
             Expanded(
               child: urunler.isEmpty
-                  ? Center(child: Text("Sepetiniz boş"))
+                  ? const Center(child: Text("Sepetiniz boş"))
                   : ListView.builder(
                       itemCount: urunler.length,
                       itemBuilder: (context, index) {
@@ -92,35 +98,33 @@ class _SepetimState extends State<Sepetim> {
                         final adet = urun["adet"] ?? 0;
 
                         return Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 4,
-                          ),
-                          padding: EdgeInsets.all(12),
+                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: Colors.green[50],
                             borderRadius: BorderRadius.circular(15),
-                             boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.9),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        ),]
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.9),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
                           ),
                           child: Row(
                             children: [
                               Expanded(
                                 child: Text(
                                   "$isim  $fiyat TL   $adet Tane",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
                               IconButton(
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.remove_circle,
                                   color: Colors.red,
                                 ),
@@ -142,16 +146,56 @@ class _SepetimState extends State<Sepetim> {
 
             // Sipariş butonu
             ElevatedButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 if (urunler.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text("Sepetiniz boş, sipariş veremezsiniz."),
                     ),
                   );
-                } else {
+                  return;
+                }
+
+                try {
+                  final userDoc =
+                      await _firestore.collection('users').doc(_auth.currentUser!.uid).get();
+                  double userBalance = (userDoc['balance'] ?? 0).toDouble();
+                  double totalPrice = toplamFiyat();
+
+                  if (userBalance < totalPrice) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Yetersiz bakiye!")),
+                    );
+                    return;
+                  }
+
+                  // Siparişi Firestore'a ekle
+                  for (var urun in urunler) {
+                    await _firestore.collection('orders').add({
+                      'userId': _auth.currentUser!.uid,
+                      'productName': urun["isim"],
+                      'price': urun["fiyat"],
+                      'quantity': urun["adet"],
+                      'timestamp': FieldValue.serverTimestamp(),
+                    });
+                  }
+
+                  // Bakiyeyi düş
+                  await _firestore.collection('users').doc(_auth.currentUser!.uid).update({
+                    'balance': userBalance - totalPrice,
+                  });
+
+                  // Sepeti temizle
+                  setState(() {
+                    urunler.clear();
+                  });
+
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Siparişiniz alındı!")),
+                    const SnackBar(content: Text("Siparişiniz alındı, bakiye güncellendi!")),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Sipariş hatası: $e")),
                   );
                 }
               },
