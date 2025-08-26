@@ -6,7 +6,7 @@ import '../services/firestore_user_service.dart'; // Firestore servisi
 import 'package:flutter_application_1/views/giris.dart';
 import 'package:flutter_application_1/views/sepetim.dart';
 import 'package:flutter_application_1/views/islemgecmisi.dart';
-import 'package:flutter_application_1/views/berber.dart';
+
 
 class Anasayfa extends StatefulWidget {
   const Anasayfa({super.key});
@@ -102,16 +102,7 @@ Widget build(BuildContext context) {
           );
         },
       ),
-      ListTile(
-        leading: const Icon(Icons.cut),
-        title: const Text('Berber'),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Berber()),
-          );
-        },
-      ),
+     
       ListTile(
         leading: const Icon(Icons.history),
         title: const Text('İşlem Geçmişi'),

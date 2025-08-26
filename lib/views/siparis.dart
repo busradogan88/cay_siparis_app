@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/anasayfa.dart'; // Ana sayfa import edildi
 import 'package:flutter_application_1/views/bakiye.dart';
-import 'package:flutter_application_1/views/berber.dart';
 import 'package:flutter_application_1/views/islemgecmisi.dart';
 import 'package:flutter_application_1/views/sepetim.dart';
 import 'package:flutter_application_1/widgets/order_card.dart';
@@ -114,17 +113,7 @@ class _SiparisDurumu extends State<Siparis> {
                 );
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.cut),
-              title: const Text('Berber Sırası'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Berber()),
-                );
-              },
-            ),
+          
             const Divider(),
             // Ürün ekleme butonu (Test için)
             ListTile(

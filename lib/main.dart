@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'package:flutter_application_1/views/giris.dart';
-import 'package:flutter_application_1/views/anasayfa.dart'; // Ana sayfa import edildi
+import 'package:flutter_application_1/views/anasayfa.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
